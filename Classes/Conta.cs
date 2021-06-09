@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 
 namespace DIO.Bank
 {
@@ -8,7 +9,10 @@ namespace DIO.Bank
 		private TipoConta TipoConta { get; set; }
 		private double Saldo { get; set; }
 		private double Credito { get; set; }
-		private string Nome { get; set; }
+		public string Nome { get; private set; }
+		public string Agencia { get; private set; }
+		public string NumeroConta { get; private set; }
+		public string DigitoConta { get; private set; }
 
 		// Métodos
 		public Conta(TipoConta tipoConta, double saldo, double credito, string nome)
@@ -17,6 +21,9 @@ namespace DIO.Bank
 			this.Saldo = saldo;
 			this.Credito = credito;
 			this.Nome = nome;
+			this.Agencia = gerarAgencia();
+			this.NumeroConta = gerarConta();
+			this.DigitoConta = gerarDigitoConta();
 		}
 
 		public bool Sacar(double valorSaque)
@@ -51,11 +58,44 @@ namespace DIO.Bank
         public override string ToString()
 		{
             string retorno = "";
-            retorno += "TipoConta " + this.TipoConta + " | ";
+			retorno += "Agencia " + this.Agencia + " | ";
+			retorno += "Cc " + this.NumeroConta ;
+			retorno += "-" + this.DigitoConta + " | ";
+			retorno += "TipoConta " + this.TipoConta + " | ";
             retorno += "Nome " + this.Nome + " | ";
             retorno += "Saldo " + this.Saldo + " | ";
             retorno += "Crédito " + this.Credito;
 			return retorno;
+		}
+
+		private string gerarConta()
+		{
+		    var rd= new	Random();
+			var retorno = new StringBuilder();
+			for (int i = 0; i < 5; i++)
+			{
+				retorno.Append(rd.Next(0, 9).ToString());
+			}
+
+			return retorno.ToString();
+		}
+
+		private string gerarAgencia()
+		{
+			var rd = new Random();
+			var retorno = new StringBuilder();
+			for (int i = 0; i < 5; i++)
+			{
+				retorno.Append(rd.Next(0, 9).ToString());
+			}
+
+			return retorno.ToString();
+		}
+
+		private string gerarDigitoConta()
+		{
+			int rd = new Random().Next(0, 9);
+			return rd.ToString();
 		}
 	}
 }

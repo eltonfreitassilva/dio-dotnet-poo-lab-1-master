@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DIO.Bank
 {
@@ -29,7 +30,7 @@ namespace DIO.Bank
 					case "5":
 						Depositar();
 						break;
-                    case "C":
+					case "C":
 						Console.Clear();
 						break;
 
@@ -39,20 +40,36 @@ namespace DIO.Bank
 
 				opcaoUsuario = ObterOpcaoUsuario();
 			}
-			
+
 			Console.WriteLine("Obrigado por utilizar nossos serviços.");
 			Console.ReadLine();
 		}
 
 		private static void Depositar()
 		{
+			Console.Write("Digite o número da agencia: ");
+			string numeroAgencia = Console.ReadLine();
+
 			Console.Write("Digite o número da conta: ");
-			int indiceConta = int.Parse(Console.ReadLine());
+			string numeroConta = Console.ReadLine();
+			Console.Write("Digite o digito da conta: ");
+			string digitoConta = Console.ReadLine();
 
 			Console.Write("Digite o valor a ser depositado: ");
 			double valorDeposito = double.Parse(Console.ReadLine());
 
-            listContas[indiceConta].Depositar(valorDeposito);
+			var lstConta = listContas.Where(x => x.NumeroConta == numeroConta
+			  && x.DigitoConta == digitoConta
+			  && x.Agencia == numeroAgencia
+			  ).FirstOrDefault();
+
+			if(lstConta == null)
+			{
+				Console.WriteLine("Nenhuma conta encontrada.");
+				return;
+			}
+
+			lstConta.Depositar(valorDeposito);
 		}
 
 		private static void Sacar()
@@ -63,7 +80,7 @@ namespace DIO.Bank
 			Console.Write("Digite o valor a ser sacado: ");
 			double valorSaque = double.Parse(Console.ReadLine());
 
-            listContas[indiceConta].Sacar(valorSaque);
+			listContas[indiceConta].Sacar(valorSaque);
 		}
 
 		private static void Transferir()
@@ -71,13 +88,13 @@ namespace DIO.Bank
 			Console.Write("Digite o número da conta de origem: ");
 			int indiceContaOrigem = int.Parse(Console.ReadLine());
 
-            Console.Write("Digite o número da conta de destino: ");
+			Console.Write("Digite o número da conta de destino: ");
 			int indiceContaDestino = int.Parse(Console.ReadLine());
 
 			Console.Write("Digite o valor a ser transferido: ");
 			double valorTransferencia = double.Parse(Console.ReadLine());
 
-            listContas[indiceContaOrigem].Transferir(valorTransferencia, listContas[indiceContaDestino]);
+			listContas[indiceContaOrigem].Transferir(valorTransferencia, listContas[indiceContaDestino]);
 		}
 
 		private static void InserirConta()
@@ -114,13 +131,16 @@ namespace DIO.Bank
 				return;
 			}
 
+
 			for (int i = 0; i < listContas.Count; i++)
 			{
 				Conta conta = listContas[i];
-				Console.Write("#{0} - ", i);
-				Console.WriteLine(conta);
+				Console.WriteLine("{0}", conta.ToString());
+
 			}
 		}
+
+	
 
 		private static string ObterOpcaoUsuario()
 		{
